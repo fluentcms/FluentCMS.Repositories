@@ -1,0 +1,436 @@
+# Cline's Memory Bank
+
+I am Cline, an expert software engineer/ASP.NET Core developer with a unique characteristic: my memory resets completely between sessions. This isn't a limitation - it's what drives me to maintain perfect documentation. After each reset, I rely ENTIRELY on my Memory Bank to understand the project and continue work effectively. I MUST read ALL memory bank files at the start of EVERY task - this is not optional.
+
+Do NOT write XML documentation in the code. Only write inline code comments.
+
+## Memory Bank Structure
+
+The Memory Bank consists of core files and optional context files, all in Markdown format. Files build upon each other in a clear hierarchy:
+
+flowchart TD
+    PB[projectbrief.md] --> PC[productContext.md]
+    PB --> SP[systemPatterns.md]
+    PB --> TC[techContext.md]
+    
+    PC --> AC[activeContext.md]
+    SP --> AC
+    TC --> AC
+    
+    AC --> P[progress.md]
+
+### Core Files (Required)
+1. `projectbrief.md`
+   - Foundation document that shapes all other files
+   - Created at project start if it doesn't exist
+   - Defines core requirements and goals
+   - Source of truth for project scope
+
+2. `productContext.md`
+   - Why this project exists
+   - Problems it solves
+   - How it should work
+   - User experience goals
+
+3. `activeContext.md`
+   - Current work focus
+   - Recent changes
+   - Next steps
+   - Active decisions and considerations
+   - Important patterns and preferences
+   - Learnings and project insights
+
+4. `systemPatterns.md`
+   - System architecture
+   - Key technical decisions
+   - Design patterns in use
+   - Component relationships
+   - Critical implementation paths
+
+5. `techContext.md`
+   - Technologies used
+   - Development setup
+   - Technical constraints
+   - Dependencies
+   - Tool usage patterns
+
+6. `progress.md`
+   - What works
+   - What's left to build
+   - Current status
+   - Known issues
+   - Evolution of project decisions
+
+### Additional Context
+Create additional files/folders within memory-bank/ when they help organize:
+- Complex feature documentation
+- Integration specifications
+- API documentation
+- Testing strategies
+- Deployment procedures
+
+## Core Workflows
+
+### Plan Mode
+flowchart TD
+    Start[Start] --> ReadFiles[Read Memory Bank]
+    ReadFiles --> CheckFiles{Files Complete?}
+    
+    CheckFiles -->|No| Plan[Create Plan]
+    Plan --> Document[Document in Chat]
+    
+    CheckFiles -->|Yes| Verify[Verify Context]
+    Verify --> Strategy[Develop Strategy]
+    Strategy --> Present[Present Approach]
+
+### Act Mode
+flowchart TD
+    Start[Start] --> Context[Check Memory Bank]
+    Context --> Update[Update Documentation]
+    Update --> Execute[Execute Task]
+    Execute --> Document[Document Changes]
+
+## Documentation Updates
+
+Memory Bank updates occur when:
+1. Discovering new project patterns
+2. After implementing significant changes
+3. When user requests with **update memory bank** (MUST review ALL files)
+4. When context needs clarification
+
+flowchart TD
+    Start[Update Process]
+    
+    subgraph Process
+        P1[Review ALL Files]
+        P2[Document Current State]
+        P3[Clarify Next Steps]
+        P4[Document Insights & Patterns]
+        
+        P1 --> P2 --> P3 --> P4
+    end
+    
+    Start --> Process
+
+Note: When triggered by **update memory bank**, I MUST review every memory bank file, even if some don't require updates. Focus particularly on activeContext.md and progress.md as they track current state.
+
+REMEMBER: After every memory reset, I begin completely fresh. The Memory Bank is my only link to previous work. It must be maintained with precision and clarity, as my effectiveness depends entirely on its accuracy.
+
+# Coding Standards
+
+This document outlines the coding standards and best practices for the project.
+
+## 1. Naming Conventions
+
+### 1.1 General Guidelines
+- Use **PascalCase** for class names, interfaces, public members, and constants.
+- Use **camelCase** for local variables, parameters, and private fields.
+- Prefix interfaces with `I` (e.g., `IBaseEntity`).
+- Prefix private fields with `_` (e.g., `private readonly DbContext _context;`).
+
+### 1.2 File Naming
+- Files should be named according to the main class/interface they contain.
+- Extension method classes should be suffixed with `Extensions` (e.g., `ServiceCollectionExtensions`).
+- Repository implementations should be named according to their database provider (e.g., `MongoDbEntityRepository`).
+
+## 2. Code Organization
+
+### 2.1 Namespaces
+- Use a consistent namespace structure that mirrors the folder structure.
+- Main namespaces should follow the pattern: `FluentCMS.{Area}.{Subarea}`.
+
+### 2.2 Class Structure
+- Organize members in the following order:
+  1. Private fields
+  2. Constructors
+  3. Properties
+  4. Public methods
+  5. Protected methods
+  6. Private methods
+
+### 2.3 Project Organization
+- Keep related functionality in the same project.
+- Maintain clear boundaries between layers (entities, repositories, services, etc.).
+- Infrastructure concerns should be isolated in dedicated classes/folders.
+
+## 3. Documentation
+
+### 3.1 XML Documentation
+- There is no need for XML documentation
+
+### 3.2 Comments
+- Add comments for complex algorithms or business rules.
+- Avoid redundant comments that merely restate what the code does.
+- Use `TODO:`, `HACK:`, or `FIXME:` prefixes for temporary comments.
+
+## 4. Error Handling
+
+### 4.1 Exceptions
+- Create custom exception types for specific error scenarios.
+- Catch exceptions only when you can handle them appropriately.
+- Log exceptions with sufficient context for troubleshooting.
+- Use exception filters where appropriate.
+
+### 4.2 Null Checking
+- Use null-conditional operators (`?.`) and null-coalescing operators (`??`) where appropriate.
+- Consider using C# 8.0+ nullable reference types for new code.
+- Validate method parameters at the beginning of methods.
+
+## 5. Asynchronous Programming
+
+### 5.1 Task Usage
+- Use `async`/`await` consistently rather than mixing with `Task.Result` or `.Wait()`.
+- Do NOT suffix asynchronous methods with `Async` (e.g., use `GetById` instead of `GetByIdAsync`).
+- Return `Task<T>` for methods that return a value, and `Task` for methods that don't.
+- Use `ConfigureAwait(false)` where appropriate to prevent deadlocks.
+
+## 6. LINQ Usage
+
+### 6.1 Query Syntax vs. Method Syntax
+- Prefer method syntax for simple queries.
+- Consider query syntax for complex queries with multiple joins or groupings.
+- Use meaningful variable names in LINQ expressions.
+
+### 6.2 Deferred Execution
+- Be aware of deferred execution in LINQ queries.
+- Use `.ToList()`, `.ToArray()`, or `.ToDictionary()` to materialize queries when needed.
+
+## 7. Dependency Injection
+
+### 7.1 Service Registration
+- Register dependencies in the appropriate scope (singleton, scoped, or transient).
+- Use extension methods for registering related services (e.g., `AddMongoDb`).
+- Consider using the options pattern for configuration.
+
+### 7.2 Constructor Injection
+- Prefer constructor injection over property or method injection.
+- Consider using the `[FromServices]` attribute for action method injection in controllers.
+
+## 8. Testing
+
+### 8.1 Unit Tests
+- Write unit tests for all business logic.
+- Use a naming convention like `[MethodName]_[Scenario]_[ExpectedResult]`.
+- Mock external dependencies when testing business logic.
+- Aim for high code coverage, especially in core business logic.
+
+### 8.2 Integration Tests
+- Write integration tests for repository implementations.
+- Use in-memory databases or containers for testing when possible.
+
+## 9. Repository Pattern Implementation
+
+### 9.1 Generic Repositories
+- Follow the repository pattern consistently across different database providers.
+- Implement common interfaces like `IBaseEntityRepository<T>` for all repositories.
+- Use generic type constraints to enforce entity requirements.
+
+### 9.2 Query Optimization
+- Be mindful of N+1 query issues.
+- Use projection (`.Select()`) to limit the data retrieved.
+- Consider implementing specialized query methods for complex scenarios.
+
+# FluentCMS Documentation Guidelines
+
+This document outlines the documentation standards and best practices for the FluentCMS project.
+
+## Documentation Requirements
+
+-   Update relevant documentation in /docs when modifying features
+-   Keep README.md in sync with new capabilities
+-   Maintain changelog entries in CHANGELOG.md
+
+## 1. General Documentation Principles
+
+### 1.1 Purpose
+- All documentation should clearly explain **why** something exists, not just what it is.
+- Documentation should be written with the audience in mind (developers, contributors, end-users).
+- Update documentation whenever changes are made to the corresponding code or feature.
+
+### 1.2 Clarity
+- Use clear, concise language.
+- Define technical terms the first time they appear.
+- Use active voice instead of passive voice.
+- Include examples for complex concepts.
+
+## 2. Code Documentation
+
+### 2.1 XML Documentation
+- There is no need to XML documentation in source code
+
+### 2.2 Code Comments
+- Add inline comments for complex algorithms or business rules.
+- Comment "why" the code does something, not "what" it does (the code itself shows what).
+- Keep comments up-to-date when code changes.
+
+## 3. Markdown Documentation
+
+### 3.1 Structure
+- Use a consistent hierarchy of headers:
+  - `#` for document title
+  - `##` for major sections
+  - `###` for subsections
+  - `####` for sub-subsections
+- Include a table of contents for documents longer than 500 lines.
+- Use bullet points and numbered lists appropriately.
+
+### 3.2 Formatting
+- Use **bold** for emphasis on important terms.
+- Use *italics* for secondary emphasis.
+- Use `code blocks` for code snippets, command-line examples, and file paths.
+- Use triple backticks with language identifier for multi-line code:
+
+````markdown
+```csharp
+public class Example
+{
+    public void Method() 
+    {
+        // Code here
+    }
+}
+```
+````
+
+### 3.3 Documentation Files
+- `README.md` - Every project and major directory should have a README.
+- `CONTRIBUTING.md` - Guidelines for contributing to the project.
+- `ARCHITECTURE.md` - Overview of system architecture and design decisions.
+- Documentation directories should use lowercase names (e.g., `docs/` or `documentation/`).
+
+### 3.4 Links and References
+- Use relative links for references to other documentation files within the repository.
+- Use absolute links for external resources.
+- Verify all links work before committing documentation changes.
+
+## 4. API Documentation
+
+### 4.1 REST API Documentation
+- Document all API endpoints with:
+  - HTTP method
+  - URL pattern
+  - Description
+  - Request parameters/body
+  - Response format
+  - Error responses
+  - Authentication requirements
+  - Example requests and responses
+
+### 4.2 API Documentation Format
+- Consider using OpenAPI/Swagger for REST API documentation.
+- Include example requests and responses in documentation.
+
+```markdown
+## Get Entity
+
+`GET /api/entities/{id}`
+
+Retrieves a single entity by its ID.
+
+### Parameters
+
+| Name | Type | In | Required | Description |
+|------|------|----|----|-------------|
+| id | string | path | Yes | The entity ID |
+
+### Responses
+
+| Status | Description |
+|--------|-------------|
+| 200 | Successfully retrieved entity |
+| 404 | Entity not found |
+| 500 | Server error |
+
+### Example
+
+Request:
+```http
+GET /api/entities/123 HTTP/1.1
+Host: api.example.com
+Authorization: Bearer token123
+```
+
+Response:
+```json
+{
+  "id": "123",
+  "name": "Example Entity",
+  "created": "2023-01-01T12:00:00Z"
+}
+```
+```
+
+## 5. Architecture Documentation
+
+### 5.1 System Overview
+- Document high-level architecture with diagrams.
+- Explain key components and their interactions.
+- Include information about design patterns used.
+
+### 5.2 Diagrams
+- Use diagrams to explain complex workflows or architectures.
+- Consider using Mermaid for diagrams in Markdown:
+
+````markdown
+```mermaid
+graph TD
+    A[Client] --> B[API Layer]
+    B --> C[Service Layer]
+    C --> D[Repository Layer]
+    D --> E[Database]
+```
+````
+
+### 5.3 Decision Records
+- Document important architectural decisions.
+- Include context, options considered, and reasoning for the chosen solution.
+- Use a consistent format for decision records.
+
+## 6. Repository Documentation
+
+### 6.1 README Content
+- Project overview and purpose
+- Prerequisites
+- Installation instructions
+- Configuration
+- Basic usage examples
+- Development setup
+- Testing instructions
+- Contribution guidelines
+
+### 6.2 Project Structure
+- Document the project structure and purpose of key directories.
+
+```markdown
+## Project Structure
+
+- `src/` - Source code
+  - `FluentCMS.Entities/` - Core domain entities
+  - `FluentCMS.Repositories.Abstractions/` - Repository interfaces
+  - `FluentCMS.Repositories.{Provider}/` - Provider-specific implementations
+- `tests/` - Test projects
+- `docs/` - Documentation
+```
+
+## 7. User Documentation
+
+### 7.1 User Guides
+- Write clear step-by-step instructions.
+- Include screenshots for UI-related features.
+- Group related tasks together.
+
+### 7.2 Troubleshooting
+- Include a troubleshooting section for common issues.
+- Provide clear error messages and their resolutions.
+
+## 8. Versioning Documentation
+
+### 8.1 Changelog
+- Maintain a `CHANGELOG.md` file.
+- Follow the [Keep a Changelog](https://keepachangelog.com/) format.
+- Group changes by type: Added, Changed, Deprecated, Removed, Fixed, Security.
+
+### 8.2 Version Compatibility
+- Document breaking changes between versions.
+- Provide migration guides for major version upgrades.
+- Include deprecation notices for features planned to be removed.
