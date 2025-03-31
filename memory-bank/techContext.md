@@ -3,7 +3,7 @@
 ## Development Environment
 
 ### .NET Version
-- Target Framework: .NET 8.0
+- Target Framework: .NET 9.0
 - Language Version: C# 12.0
 
 ### Development Tools
